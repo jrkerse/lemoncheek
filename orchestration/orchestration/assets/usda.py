@@ -1,4 +1,5 @@
 import os
+import glob
 
 from dagster import (
     asset,
@@ -74,13 +75,11 @@ def usda_extracted_files(context: AssetExecutionContext) -> MaterializeResult:
         zip_ref.extractall(output_filepath)
         extracted_files = zip_ref.namelist()
 
-    extracted_file_paths = [os.path.join(output_filepath)]
-
     return MaterializeResult(
         metadata={
-            "Extracted to": MetadataValue.path(constants.USDA_EXTRACTED_FILE_PATH),
+            "Extracted to": MetadataValue.path(output_filepath),
             "Number of files": MetadataValue.int(len(extracted_files)),
-            "Extracted files": MetadataValue.json({"files": extracted_file_paths}),
+            "Extracted files": MetadataValue.json({"files": extracted_files}),
         }
     )
 
@@ -94,3 +93,29 @@ def usda_files(context: AssetExecutionContext, database: DuckDBResource) -> Mate
     """
     Extract all
     """
+    # Get list of csv files from the extracted directory
+    raw_files = glob.glob(f"{constants.USDA_EXTRACTED_FILE_PATH}/**/*.csv", recursive=True)
+
+    # loop through each file, creating a table in the resource file location
+    with database.get_connection() as conn:
+        for rf in raw_files:
+            context.log.info(f"Extracting {rf}")
+            filename_ext = os.path.basename(rf)
+            table_name = os.path.splitext(filename_ext)[0]
+            query = f"""
+                create or replace table {table_name} as (
+                    select *
+                    from read_csv_auto('{rf}', all_varchar=true)
+                )
+            """
+            conn.execute(query)
+
+    with database.get_connection() as conn:
+        query = "show tables;"
+        tables = conn.execute(query).fetch_df().to_dict("records")
+
+    return MaterializeResult(
+        metadata={
+            "Extracted files": MetadataValue.json({"tables": tables})
+        }
+    )
