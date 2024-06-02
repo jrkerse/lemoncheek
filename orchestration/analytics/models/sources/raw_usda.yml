@@ -1,0 +1,44 @@
+version: 2
+
+sources:
+  - name: raw_usda
+    schema: main
+    tables:
+      - name: foundation_food
+        columns:
+          - name: fdc_id
+          - name: ndb_number
+          - name: footnote
+
+      - name: food
+        columns:
+          - name: fdc_id
+            tests:
+              - unique
+              - not_null
+          - name: data_type
+            tests:
+              - accepted_values:
+                  values: ['data_type', 'agricultural_acquisition', 'sr_legacy_food', 'sub_sample_food', 'foundation_food', 'market_acquistion', 'survey_fndds_food', 'branded_food', 'experimental_food', 'sample_food']
+          - name: description
+          - name: food_category_id
+          - name: publication_date
+
+      - name: food_nutrient
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: fdc_id
+          - name: nutrient_id
+          - name: amount
+          - name: data_points
+          - name: derivation_id
+          - name: min_value
+          - name: max_value
+          - name: median_value
+          - name: loq
+          - name: footnote
+          - name: min_year_acquired
+          - name: percent_daily_value
