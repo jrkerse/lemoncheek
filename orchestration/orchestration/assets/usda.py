@@ -1,18 +1,25 @@
 import os
 
-from dagster import asset, MetadataValue, MaterializeResult, AssetExecutionContext, Output
+from dagster import (
+    asset,
+    MetadataValue,
+    MaterializeResult,
+    AssetExecutionContext,
+    Output
+)
+from dagster_duckdb import DuckDBResource
 import zipfile
-
+from datetime import datetime, timedelta
 import requests
 
 from . import constants
 
 
 @asset(
-    group_name="raw_files",
+    group_name="raw",
     compute_kind="Python",
 )
-def usda_raw_files() -> Output:
+def usda_raw_files(context: AssetExecutionContext) -> Output:
     """
     The raw files from the USDA FoodData Central (https://fdc.nal.usda.gov/download-datasets.html)
     """
@@ -20,11 +27,21 @@ def usda_raw_files() -> Output:
     local_filename = constants.USDA_FILE_PATH_URL.split('/')[-1]
     full_path = constants.USDA_RAW_FILE_PATH.format(local_filename)
 
-    with requests.get(constants.USDA_FILE_PATH_URL, stream=True) as r:
-        r.raise_for_status()
-        with open(full_path, 'wb') as output_file:
-            for chunk in r.iter_content(chunk_size=8192):
-                output_file.write(chunk)
+    # TODO: freshness checks
+    # Check if the file already exists and if it's fresh
+    is_fresh = False
+    if os.path.exists(full_path):
+        last_modified = datetime.fromtimestamp(os.path.getmtime(full_path))
+        if datetime.now() - last_modified < timedelta(days=30):
+            context.log.info(f"File {full_path} is found and fresh")
+            is_fresh = True
+
+    if not is_fresh:
+        with requests.get(constants.USDA_FILE_PATH_URL, stream=True) as r:
+            r.raise_for_status()
+            with open(full_path, 'wb') as output_file:
+                for chunk in r.iter_content(chunk_size=8192):
+                    output_file.write(chunk)
 
     filesize = os.path.getsize(full_path) / (1024 * 1024)  # get size in mb
 
@@ -40,7 +57,7 @@ def usda_raw_files() -> Output:
 
 @asset(
     deps=["usda_raw_files"],
-    group_name="raw_files",
+    group_name="raw",
     compute_kind="Python",
 )
 def usda_extracted_files(context: AssetExecutionContext) -> MaterializeResult:
@@ -66,3 +83,14 @@ def usda_extracted_files(context: AssetExecutionContext) -> MaterializeResult:
             "Extracted files": MetadataValue.json({"files": extracted_file_paths}),
         }
     )
+
+
+@asset(
+    deps=["usda_extracted_files"],
+    group_name="source",
+    compute_kind="DuckDB"
+)
+def usda_files(context: AssetExecutionContext, database: DuckDBResource) -> MaterializeResult:
+    """
+    Extract all
+    """

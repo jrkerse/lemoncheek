@@ -22,3 +22,6 @@ def get_path_for_env(path: str) -> str:
 USDA_FILE_PATH_URL = "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_csv_2024-04-18.zip"
 USDA_RAW_FILE_PATH=get_path_for_env("data/raw/{}")
 USDA_EXTRACTED_FILE_PATH = get_path_for_env("data/raw/extract")
+
+# DBT
+DBT_DIRECTORY = Path(__file__).joinpath("..", "..", "..", "analytics").resolve()
