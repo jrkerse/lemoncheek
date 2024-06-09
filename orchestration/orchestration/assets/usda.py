@@ -20,6 +20,7 @@ import requests
 
 from . import constants
 
+
 table_names = [
     # "branded_foods",
     "food",
