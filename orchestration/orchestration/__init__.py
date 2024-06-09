@@ -4,7 +4,10 @@ from .assets import usda, dbt
 from .resources import database_resource, dbt_resource
 
 usda_assets = load_assets_from_modules([usda])
-dbt_analytics_assets = load_assets_from_modules(modules=[dbt])
+dbt_analytics_assets = load_assets_from_modules(
+    modules=[dbt],
+    group_name="dbt_usda",
+)
 
 defs = Definitions(
     assets=usda_assets + dbt_analytics_assets,

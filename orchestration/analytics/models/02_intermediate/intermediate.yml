@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: int_food
+    columns:
+      - name: fdc_id
+      - name: data_type
+      - name: description
+      - name: food_category_id
+      - name: publication_date

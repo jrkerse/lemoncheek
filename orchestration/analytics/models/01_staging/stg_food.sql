@@ -3,7 +3,7 @@ with
 
     preprocessed as (
         select
-            fdc_id,
+            trim(fdc_id) as fdc_id,
             data_type,
             description,
             food_category_id,

@@ -30,6 +30,7 @@ if os.getenv("DAGSTER_DBT_PARSE_PROJECT_ON_LOAD"):
 else:
     dbt_manifest_path = DBT_DIRECTORY.joinpath("target", "manifest.json")
 
+
 @dbt_assets(
     manifest=dbt_manifest_path,
     dagster_dbt_translator=CustomDagsterDbtTranslator()

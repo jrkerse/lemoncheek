@@ -4,6 +4,7 @@
 # name or the intended use of these models
 name: 'analytics'
 version: '1.0.0'
+config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
 profile: 'analytics'
@@ -32,5 +33,4 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   analytics:
     # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+    +materialized: table

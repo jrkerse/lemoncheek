@@ -1,0 +1,107 @@
+version: 2
+
+sources:
+  - name: raw_usda
+    schema: main
+    tables:
+      - name: foundation_food
+        columns:
+          - name: fdc_id
+          - name: ndb_number
+          - name: footnote
+
+
+      - name: branded_food
+        identifier: branded_food
+        description: >
+          Foods whose nutrient values are typically obtained from food label data provided by food brand owners.
+        columns:
+          - name: fdc_id
+            description: Unique identifier for the food in the database
+            tests:
+              - not_null
+              - unique
+          - name: brand_owner
+            description: Name of the brand owner
+          - name: brand_name
+            description: Name of the brand owner
+          - name: subbrand_name
+            description: Name of the brand owner
+          - name: gtin_upc
+            description: >
+              GTIN or UPC code identifying the food. Duplicate codes signify an update to the product, use the publication_date found in the food table to distinguish when each update was published, e.g. the latest publication date will be the most recent update of the product.
+            tests:
+              - not_null
+          - name: ingredients
+            description: The list of ingredients (as it appears on the product label)
+          - name: not_a_significant_source_of
+            description: The list of ingredients (as it appears on the product label)
+          - name: serving_size
+            description: The amount of the serving size when expressed as gram or ml
+          - name: serving_size_unit
+            description: The unit used to express the serving size (gram or ml)
+          - name: household_serving_fulltext
+            description: The amount and unit of serving size when expressed in household units
+          - name: branded_food_category
+            description: The category of the branded food, assigned by GDSN or Label Insight
+          - name: data_source
+            description: The source of the data for this food. GDSN (for GS1) or LI (for Label Insight).
+            tests:
+              - not_null
+          - name: package_weight
+            description: Weight of the package
+          - name: modified_date
+            description: This date reflects when the product data was last modified by the data provider, i.e., the manufacturer
+          - name: available_date
+            description: This is the date when the product record was available for inclusion in the database.
+            tests:
+              - not_null
+          - name: discontinued_date
+            description: This is the date when the product was discontinued.
+          - name: market_country
+            description: The primary country where the product is marketed.
+            tests:
+              - not_null
+          - name: preparation_state_code
+            description: Code to describe the preparation of the food. Defined in GS1 link https://www.gs1.org/voc/PreparationTypeCode
+          - name: trade_channel
+            description: Includes a list of locations or programs in which the food is available. Primarily used for Child Nutrition Food Programs
+          - name: short_description
+            description: Manufacturer's short description of the product
+
+
+      - name: food
+#        meta:
+#          dagster:
+#            asset_key: ["usda_files"]
+        columns:
+          - name: fdc_id
+            tests:
+              - unique
+              - not_null
+          - name: data_type
+            tests:
+              - accepted_values:
+                  values: ['data_type', 'agricultural_acquisition', 'sr_legacy_food', 'sub_sample_food', 'foundation_food', 'market_acquistion', 'survey_fndds_food', 'branded_food', 'experimental_food', 'sample_food']
+          - name: description
+          - name: food_category_id
+          - name: publication_date
+
+      - name: food_nutrient
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: fdc_id
+          - name: nutrient_id
+          - name: amount
+          - name: data_points
+          - name: derivation_id
+          - name: min_value
+          - name: max_value
+          - name: median_value
+          - name: loq
+          - name: footnote
+          - name: min_year_acquired
+          - name: percent_daily_value
