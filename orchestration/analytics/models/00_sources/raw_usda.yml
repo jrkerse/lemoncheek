@@ -10,7 +10,6 @@ sources:
           - name: ndb_number
           - name: footnote
 
-
       - name: branded_food
         identifier: branded_food
         description: >
@@ -69,11 +68,7 @@ sources:
           - name: short_description
             description: Manufacturer's short description of the product
 
-
       - name: food
-#        meta:
-#          dagster:
-#            asset_key: ["usda_files"]
         columns:
           - name: fdc_id
             tests:
@@ -105,3 +100,5 @@ sources:
           - name: footnote
           - name: min_year_acquired
           - name: percent_daily_value
+
+      
