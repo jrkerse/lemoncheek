@@ -20,6 +20,12 @@ import requests
 
 from . import constants
 
+# Warnings cleanup
+import warnings
+# noinspection PyProtectedMember
+from dagster._utils.warnings import ExperimentalWarning
+
+warnings.filterwarnings("ignore", category=ExperimentalWarning)
 
 table_names = [
     # "branded_foods",
@@ -27,15 +33,16 @@ table_names = [
     "branded_food",
     # "food_attribute",
     # "food_attribute_types",
-    # "food_calorie_conversion_factor",
+    "food_calorie_conversion_factor",
     # "food_category",
     # "food_component",
     "food_nutrient",
-    # "food_nutrient_conversion_factor",
+    "food_nutrient_conversion_factor",
     # "food_nutrient_derivation",
     # "food_nutrient_source",
-    # "food_portion",
+    "food_portion",
     "foundation_food",
+    "nutrient"
 ]
 
 table_names_to_asset_keys = {
@@ -165,7 +172,6 @@ def usda_extracted_files(context: AssetExecutionContext) -> MaterializeResult:
     can_subset=True,
 )
 def usda_data_sync_assets(context: AssetExecutionContext, database: DuckDBResource) -> Iterator[ObserveResult]:
-
     with database.get_connection() as conn:
         for table_name in table_names:
             found_table = glob.glob(f"{constants.USDA_EXTRACTED_FILE_PATH}/**/{table_name}.csv", recursive=True)[0]
@@ -183,5 +189,3 @@ def usda_data_sync_assets(context: AssetExecutionContext, database: DuckDBResour
                     "Extracted table": MetadataValue.text(table_name)
                 }
             )
-
-

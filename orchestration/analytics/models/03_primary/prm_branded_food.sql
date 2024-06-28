@@ -1,36 +1,29 @@
-with
-    food as (select * from {{  ref("int_food") }}),
-    branded_food as (select * from {{  ref("stg_branded_food") }}),
+{{ config(materialized='table') }}
 
-    final as (
+with
+    branded_food as (select * from {{  ref("int_branded_food") }}),
+    food_nutrient as (select * from {{ ref("int_food_nutrient")  }}),
+    nutrient as (select * from {{ ref("stg_nutrient") }}),
+
+    joined as (
         select
-            f.fdc_id as fdc_id,
-            data_type,
-            description,
-            food_category_id,
-            publication_date,
-            brand_owner,
-            brand_name,
-            subbrand_name,
-            gtin_upc,
-            ingredients,
-            not_a_significant_source_of,
-            serving_size,
-            serving_size_unit,
-            household_serving_fulltext,
-            branded_food_category,
-            data_source,
-            package_weight,
-            modified_date,
-            available_date,
-            market_country,
-            discontinued_date,
-            preparation_state_code,
-            trade_channel,
-            short_description
-        from food f
-            inner join branded_food bf
-            on f.fdc_id=bf.fdc_id
+            bf.fdc_id as fdc_id,
+            bf.brand_owner as brand_owner,
+            bf.brand_name as brand_name,
+            bf.subbrand_name as subbrand_name,
+            bf.ingredients as ingredients,
+            n.name as nutrient,
+            fn.amount as nutrient_amount,
+            n.unit_name as unit_name,
+            n.id as nutrient_id,
+            n.nutrient_nbr as nutrient_nbr,
+            n.rank as nutrient_rank
+        from branded_food bf
+            inner join food_nutrient fn
+                on bf.fdc_id=fn.fdc_id
+            inner join nutrient n
+                on n.id=fn.nutrient_id
     )
 
-select * from final
+select * from joined
+order by fdc_id, nutrient_rank

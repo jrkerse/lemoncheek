@@ -101,4 +101,52 @@ sources:
           - name: min_year_acquired
           - name: percent_daily_value
 
-      
+      - name: food_calorie_conversion_factor
+        columns:
+          - name: food_nutrient_conversion_factor_id
+            tests:
+              - unique
+              - not_null
+          - name: protein_value
+          - name: fat_value
+          - name: carbohydrate_value
+
+      - name: food_nutrient_conversion_factor
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: fdc_id
+            tests:
+              - not_null
+
+      - name: food_portion
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: fdc_id
+            tests:
+              - not_null
+          - name: seq_num
+          - name: amount
+          - name: measure_unit_id
+          - name: portion_description
+          - name: modifier
+          - name: gram_weight
+          - name: data_points
+          - name: footnote
+          - name: min_year_acquired
+
+      - name: nutrient
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: name
+          - name: unit_name
+          - name: nutrient_nbr
+          - name: rank
