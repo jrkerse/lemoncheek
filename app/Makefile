@@ -47,6 +47,7 @@ test/cover:
 ## build: build the cmd/web application
 .PHONY: build
 build:
+	./tailwindcss -i assets/static/css/input.css -o assets/static/css/output.css
 	go build -o=/tmp/bin/web ./cmd/web
 	
 ## run: run the cmd/web application
@@ -57,6 +58,7 @@ run: build
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live
 run/live:
+	./tailwindcss -i assets/static/css/input.css -o assets/static/css/output.css
 	go run github.com/cosmtrek/air@v1.43.0 \
 		--build.cmd "make build" --build.bin "/tmp/bin/web" --build.delay "100" \
 		--build.exclude_dir "" \

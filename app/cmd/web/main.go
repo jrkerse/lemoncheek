@@ -77,7 +77,7 @@ func run(logger *slog.Logger) error {
 	flag.StringVar(&cfg.autoHTTPS.email, "auto-https-email", "admin@example.com", "contact email address for problems with LetsEncrypt certificates")
 	flag.BoolVar(&cfg.autoHTTPS.staging, "auto-https-staging", false, "use LetsEncrypt staging environment")
 	flag.StringVar(&cfg.cookie.secretKey, "cookie-secret-key", "ug2lofwhae6jwwiogzkoya3ccvrq7v7a", "secret key for cookie authentication/encryption")
-	flag.StringVar(&cfg.db.dsn, "db-dsn", "user:pass@localhost:5432/db", "postgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "lemoncheek:pa55word@localhost:5432/lemoncheek?sslmode=disable", "postgreSQL DSN")
 	flag.BoolVar(&cfg.db.automigrate, "db-automigrate", true, "run migrations on startup")
 	flag.StringVar(&cfg.notifications.email, "notifications-email", "", "contact email address for error notifications")
 	flag.StringVar(&cfg.session.secretKey, "session-secret-key", "mx5bagypvx4w2wh5xu7xer55jpw4ogm6", "secret key for session cookie authentication")
