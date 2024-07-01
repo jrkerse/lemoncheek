@@ -1,15 +1,112 @@
 {{define "partial:nav"}}
-<nav>
-    {{if .AuthenticatedUser}}
-    <form method="POST" action="/logout">
-            <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
-            {{.AuthenticatedUser.Email}}
-            &middot;
-            <button class="link">Logout</button>
-        </form>
-    {{else}}
-        <a href="/signup">Signup</a>
-        <a href="/login">Login</a>
-    {{end}}
+
+<nav class x-data='{ open: false }'>
+    <div class='max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 font-primary'>
+        <div class='relative flex items-center justify-between h-16 sm:h-20'>
+            <a class='flex items-center flex-grow' href='/'>
+                <img class='h-8 w-auto' src='/static/img/logo.png' alt='logo'>
+                <span class='font-semibold'>Lemon Cheek</span>
+            </a>
+
+            <!-- Mobile navigation button -->
+            <div>
+                <div class='absolute inset-y-0 right-0 flex items-center sm:hidden'>
+                    <template x-if="!open">
+                        <button @click='open = !open'
+                            class='inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-coral focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+                            type='button'>
+                            <span class='sr-only'>Open menu</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
+                    </template>
+                    <template x-if="open">
+                        <button @click='open = !open'
+                            class='inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-coral focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+                            type='button'>
+                            <span class='sr-only'>Open menu</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- Full screen navigation -->
+                <div class='flex-1 flex items-center justify-center sm:items-stretch sm:justify-start'>
+                    <div class='hidden sm:block sm:ml-6'>
+                        <div class='flex items-center space-x-4 text-sm'>
+                            <a class='text-gray-600 hover:text-coral pl-3 py-3 rounded-md font-medium'
+                                href='/about'>About</a>
+                            <a class='text-gray-600 hover:text-coral pl-3 py-3 rounded-md font-medium'
+                                href='/pricing'>Pricing</a>
+                            <a class='text-gray-600 hover:text-coral pl-3 py-3 rounded-md font-medium'
+                                href='/contact'>Contact</a>
+                            {{if .AuthenticatedUser}}
+                            <form method="POST" action="/logout">
+                                <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+                                {{.AuthenticatedUser.Email}}
+                                &middot;
+                                <button
+                                    class="text-gray-600 hover:text-coral pl-3 py-3 roudned-md font-medium">Logout</button>
+                            </form>
+                            {{else}}
+                            <!-- <a href="/signup" class="px-3 py-2 rounded-md text-sm font-medium">Signup</a> -->
+                            <!-- <a href="/login" class="px-3 py-2 rounded-md text-sm font-medium">Login</a> -->
+                            <a class='text-gray-600 hover:text-coral pl-3 py-3 rounded-md font-medium'
+                                href='/login'>Login</a>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile navigation -->
+        <div x-cloak x-show='open' class='sm:hidden h-screen' id='mobile-menu'>
+            <div @click.away='open = false' x-transition:enter='transition ease-out duration-200'
+                x-transition:enter-start='transform opacity-0 scale-95'
+                x-transition:enter-end='transform opacity-100 scale-100'
+                x-transition:leave='transition ease-in duration-75'
+                x-transition:leave-start='transform opacity-100 scale-100'
+                x-transition:leave-end='transform opacity-0 scale-95' class='py-4 space-y-2 text-center text-sm'>
+                <button class='w-full px-3 py-4 font-medium border-b border-gray-300 relative h-12 flex items-center'
+                    id='button-about' type='button' aria-expanded='true'>
+                    <a class='text-gray-600 hover:text-coral w-full h-full absolute inset-0 pt-2'
+                        href='/about'>About</a>
+                </button>
+                <button class='w-full px-3 py-4 font-medium border-b border-gray-300 relative h-12 flex items-center'
+                    w-full px-3 py-4 font-medium border-b border-gray-300 relative h-12 flex items-center
+                    id='button-pricing' type='button' aria-expanded='true'>
+                    <a class='text-gray-600 hover:text-coral w-full h-full absolute inset-0 pt-2'
+                        href='/pricing'>Pricing</a>
+                </button>
+                <button class='w-full px-3 py-4 font-medium border-b border-gray-300 relative h-12 flex items-center'
+                    id='button-contact' type='button' aria-expanded='true'>
+                    <a class='text-gray-600 hover:text-coral w-full h-full absolute inset-0 pt-2'
+                        href='/contact'>Contact</a>
+                </button>
+                {{if .AuthenticatedUser}}
+                <form method="POST" action="/logout">
+                    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+                    {{.AuthenticatedUser.Email}}
+                    &middot;
+                    <button class="text-gray-600 hover:text-coral pl-3 py-3 roudned-md font-medium">Logout</button>
+                </form>
+                {{else}}
+                <button class='w-full px-3 py-4 font-medium border-b border-gray-300 relative h-12 flex items-center'
+                    id='button-login' type='button' aria-expanded='true'>
+                    <a class='text-gray-600 hover:text-coral w-full h-full absolute inset-0 pt-2'
+                        href='/login'>Login</a>
+                </button>
+                {{end}}
+            </div>
+        </div>
+    </div>
 </nav>
+
 {{end}}

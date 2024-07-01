@@ -1,5 +1,6 @@
 # Junk...
 **/.idea/
+.DS_Store
 
 # Data stuff
 orchestration/data/

@@ -1,0 +1,31 @@
+{{define "partial:hero"}}
+
+<div class='max-w-6xl mx-auto py-12 lg:pr-8 lg:pl-0 flex flex-col lg:flex-row space-y-8 lg:space-y-0'>
+    <div class='w-full lg:w-1/2 flex flex-col justify-center items-center'>
+        <div class='max-w-sm lg:max-w-md space-y-10 w-5/6 mx-auto lg:w-full text-center lg:text-left'>
+            <h1 class='font-primary font-extrabold text-gray-900 text-3xl sm:text-4xl md:text-5xl md:leading-tight'>
+                Meal
+                prep for
+                <span class='text-coral'>foodies</span>
+            </h1>
+            <p class='font-secondary text-gray-500 text-base md:text-lg lg:text-xl'>
+                Discover meal plans that suck less for a healthier you.
+            <p>
+            <div class='flex space-x-4'>
+                <button
+                    class='px-4 py-2 text-base sm:text-lg font-primary font-medium text-white bg-coral rounded-md hover:border-lemon hover:bg-lemon hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-lemon w-42 sm:w-48'>
+                    Get Started
+                </button>
+                <button
+                    class='px-4 py-2 text-base sm:text-lg font-primary font-medium text-charcoal bg-orange-100 rounded-md border border-coral hover:bg-mint hover:border-mint hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-palette-primary w-32 sm:w-36'>
+                    Learn more
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class='w-full lg:w-1/2 transform scale-x-125 lg:scale-x-100' style='opacity: 1; transform: none;'>
+        <img alt='hero-image' src='/static/img/hero.png'
+            class='mx-auto object-contain bg-amber-100 rounded-lg rounded-tl-[12rem] w-full h-96 sm:h-112 md:h-120'>
+    </div>
+</div>
+{{end}}
